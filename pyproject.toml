@@ -1,0 +1,55 @@
+[project]
+name = "mcp-gravitino"
+version = "0.1.0"
+description = "MCP server providing Gravitino APIs"
+authors = [
+]
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+keywords = ["mcp", "fastmcp", "Gravitino", "metadata", "integration"]
+dependencies = [
+    "fastmcp>=0.4.1",
+    "httpx>=0.28.1",
+    "pydantic-settings>=2.8.1",
+]
+py_modules = ["mcp_gravitino"]
+
+[project.urls]
+Homepage = "https://github.com/datastrato/mcp-gravitino"
+Repository = "https://github.com/datastrato/mcp-gravitino"
+Documentation = "https://github.com/datastrato/mcp-gravitino#readme"
+"Bug Tracker" = "https://github.com/datastrato/mcp-gravitino/issues"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build]
+include = [
+    "mcp_gravitino/**/*.py",
+    "README.md",
+    "LICENSE",
+]
+exclude = [
+    "**/__pycache__",
+    "**/*.py[cod]",
+    "**/*.so",
+]
+[tool.hatch.build.targets.wheel]
+packages = ["mcp_gravitino"]
+
+
+[dependency-groups]
+dev = [
+    "build>=1.2.2.post1",
+    "ruff>=0.11.3",
+    "twine>=6.1.0",
+]
+
+[tool.ruff]
+line-length = 120
+target-version = "py310"
+select = [
+    "I",  # isort
+]
