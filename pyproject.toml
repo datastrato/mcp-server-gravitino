@@ -1,5 +1,5 @@
 [project]
-name = "mcp-gravitino"
+name = "mcp-server-gravitino"
 version = "0.1.0"
 description = "MCP server providing Gravitino APIs"
 authors = [
@@ -13,13 +13,13 @@ dependencies = [
     "httpx>=0.28.1",
     "pydantic-settings>=2.8.1",
 ]
-py_modules = ["mcp_gravitino"]
+py_modules = ["mcp_server_gravitino"]
 
 [project.urls]
-Homepage = "https://github.com/datastrato/mcp-gravitino"
-Repository = "https://github.com/datastrato/mcp-gravitino"
-Documentation = "https://github.com/datastrato/mcp-gravitino#readme"
-"Bug Tracker" = "https://github.com/datastrato/mcp-gravitino/issues"
+Homepage = "https://github.com/datastrato/mcp-server-gravitino"
+Repository = "https://github.com/datastrato/mcp-server-gravitino"
+Documentation = "https://github.com/datastrato/mcp-server-gravitino#readme"
+"Bug Tracker" = "https://github.com/datastrato/mcp-server-gravitino/issues"
 
 [build-system]
 requires = ["hatchling"]
@@ -27,7 +27,7 @@ build-backend = "hatchling.build"
 
 [tool.hatch.build]
 include = [
-    "mcp_gravitino/**/*.py",
+    "mcp_server_gravitino/**/*.py",
     "README.md",
     "LICENSE",
 ]
@@ -37,7 +37,7 @@ exclude = [
     "**/*.so",
 ]
 [tool.hatch.build.targets.wheel]
-packages = ["mcp_gravitino"]
+packages = ["mcp_server_gravitino"]
 
 
 [dependency-groups]

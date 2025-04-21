@@ -20,17 +20,17 @@ MCP server providing Gravitino APIs - A FastMCP integration for Apache Gravitino
             "command": "uv",
             "args": [
               "--directory",
-              "/Users/user/workspace/mcp-gravitino",
+              "/Users/user/workspace/mcp-server-gravitino",
                 "run",
                 "--with",
                 "fastmcp",
                 "--with",
                 "httpx",
                 "--with",
-                "mcp-gravitino",
+                "mcp-server-gravitino",
                 "python",
                 "-m",
-                "mcp_gravitino.server"
+                "mcp_server_gravitino.server"
             ],
             "env": {
                 "GRAVITINO_URI": "http://localhost:8090",
@@ -46,24 +46,24 @@ MCP server providing Gravitino APIs - A FastMCP integration for Apache Gravitino
 ## Environment Variables
 
 ### Authorization
-mcp-gravitino provides token auth and basic auth:
+mcp-server-gravitino provides token auth and basic auth:
 
 **Token Auth**
 ```
-GRAVITINO_URI=http://localhost:8585
+GRAVITINO_URI=http://localhost:8090
 GRAVITINO_JWT_TOKEN=<YOUR GRAVITINO JWT TOKEN>
 ```
 
 **Basic Auth**
 ```
-GRAVITINO_URI=http://localhost:8585
+GRAVITINO_URI=http://localhost:8090
 GRAVITINO_USERNAME=<YOUR GRAVITINO USERNAME>
 GRAVITINO_PASSWORD=<YOUR GRAVITINO PASSWORD>
 ```
 
 
 ## Tool list
-mcp-gravitino does not provide all APIs available in Gravitino.
+mcp-server-gravitino does not provide all APIs available in Gravitino.
 
 ### Table Tools
 - `get_list_of_catalogs`: Get a list of catalogs with basic information

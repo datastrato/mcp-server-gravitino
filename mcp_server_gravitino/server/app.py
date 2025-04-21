@@ -3,8 +3,8 @@
 import httpx
 from fastmcp import FastMCP
 
-from mcp_gravitino.server import tools
-from mcp_gravitino.server.settings import Settings
+from mcp_server_gravitino.server import tools
+from mcp_server_gravitino.server.settings import Settings
 
 
 class GravitinoMCPServer:

@@ -50,7 +50,7 @@ def update_mcp_config(
         args.extend(["--with-editable", str(with_editable)])
 
     # Add fastmcp run command
-    args.extend(["python", "-m", "mcp_gravitino.server"])
+    args.extend(["python", "-m", "mcp_server_gravitino.server"])
 
     server_config = {
         "command": "uv",

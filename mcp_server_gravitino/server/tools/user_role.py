@@ -2,7 +2,7 @@
 # This software is licensed under the Apache License version 2.
 import httpx
 from fastmcp import FastMCP
-from mcp_gravitino.server.tools import metalake_name
+from mcp_server_gravitino.server.tools import metalake_name
 
 def get_list_of_roles(mcp: FastMCP, session: httpx.Client):
     # https://gravitino.apache.org/docs/0.8.0-incubating/api/rest/list-roles
