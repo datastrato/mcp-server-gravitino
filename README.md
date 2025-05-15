@@ -34,7 +34,7 @@ MCP server providing Gravitino APIs - A FastMCP integration for Apache Gravitino
             ],
             "env": {
                 "GRAVITINO_URI": "http://localhost:8090",
-                "GRAVITINO_USER_NAME": "admin",
+                "GRAVITINO_USERNAME": "admin",
                 "GRAVITINO_PASSWORD": "admin",
                 "GRAVITINO_METALAKE": "metalake_demo"
             }
