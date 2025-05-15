@@ -5,15 +5,20 @@ import os
 metalake_name = os.getenv("GRAVITINO_METALAKE", "metalake_demo")
 
 from mcp_server_gravitino.server.tools.catalog import (
+    get_catalog_by_name,
     get_list_of_catalogs,
-    get_list_of_schemas,
+)
+from mcp_server_gravitino.server.tools.metalake import (
+    get_list_of_metalakes,
+    get_metalake_by_name,
 )
 from mcp_server_gravitino.server.tools.models import (
     get_list_model_versions_by_fqn,
     get_list_of_models,
-    get_model_by_fqn,
-    get_model_version_by_fqn_and_alias,
-    get_model_version_by_fqn_and_version,
+)
+from mcp_server_gravitino.server.tools.schema import (
+    get_list_of_schemas,
+    get_schema_by_name,
 )
 from mcp_server_gravitino.server.tools.table import (
     get_list_of_tables,
@@ -36,6 +41,9 @@ from mcp_server_gravitino.server.tools.user_role import (
 __all__ = [
     "get_table_by_fqn",
     "get_table_columns_by_fqn",
+    "get_list_of_metalakes",
+    "get_metalake_by_name",
+    "get_catalog_by_name",
     "get_list_of_tables",
     "get_list_of_tags",
     "associate_tag_to_table",
@@ -43,13 +51,12 @@ __all__ = [
     "list_objects_by_tag",
     "get_list_of_catalogs",
     "get_list_of_schemas",
+    "get_schema_by_name",
     "get_list_of_roles",
     "get_list_of_users",
     "grant_role_to_user",
     "revoke_role_from_user",
-    "get_list_model_versions_by_fqn",
+    "get_list_of_groups",
     "get_list_of_models",
-    "get_model_by_fqn",
-    "get_model_version_by_fqn_and_alias",
-    "get_model_version_by_fqn_and_version",
+    "get_list_model_versions_by_fqn",
 ]
