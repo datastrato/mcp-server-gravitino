@@ -56,7 +56,6 @@ __all__ = [
     "get_list_of_users",
     "grant_role_to_user",
     "revoke_role_from_user",
-    "get_list_of_groups",
     "get_list_of_models",
     "get_list_model_versions_by_fqn",
 ]

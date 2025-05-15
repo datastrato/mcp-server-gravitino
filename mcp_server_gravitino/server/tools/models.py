@@ -94,12 +94,49 @@ def get_list_model_versions_by_fqn(mcp: FastMCP, session: httpx.Client) -> None:
         response_json = response.json()
         versions = response_json.get("versions", [])
 
-        return [
-            {
-                "version": version,
-            }
+        version_objects = [
+            _get_model_version_by_fqn_and_version_response(session, fqn, version).get("modelVersion")
             for version in versions
         ]
+
+        return [
+            {
+                "version": obj.get("version"),
+                "comment": obj.get("comment"),
+                "aliases": ",".join(obj.get("aliases")),
+                "uri": obj.get("uri"),
+                "creator": obj.get("audit").get("creator"),
+            }
+            for obj in version_objects
+        ]
+
+
+def _get_model_version_by_fqn_and_version_response(session: httpx.Client, fully_qualified_name: str, version: str):
+    """
+    Get a model version by fully qualified model name and version.
+    Parameters
+    ----------
+    session : httpx.Client
+        HTTP client to make requests to Metalake API.
+    fully_qualified_name : str
+        Fully qualified name of the model.
+    version : str
+        Version of the model version.
+    Returns
+    -------
+    dict
+        Response from Metalake API.
+    """
+    model_names = fully_qualified_name.split(".")
+    metalake_name, catalog_name, schema_name, model_name = _parse_four_level_fqn(model_names)
+    if not metalake_name:
+        metalake_name = global_metalake_name
+
+    response = session.get(
+        f"/api/metalakes/{metalake_name}/catalogs/{catalog_name}/schemas/{schema_name}/models/{model_name}/versions/{version}"
+    )
+    response.raise_for_status()
+    return response.json()
 
 
 def _parse_four_level_fqn(fqn: List[str]) -> Tuple[Optional[str], str, str, str]:
