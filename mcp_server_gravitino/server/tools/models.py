@@ -7,6 +7,7 @@ import httpx
 from fastmcp import FastMCP
 
 from mcp_server_gravitino.server.tools import metalake_name as global_metalake_name
+from mcp_server_gravitino.server.tools.common_tools import parse_four_level_fqn
 
 
 def get_list_of_models(mcp: FastMCP, session: httpx.Client) -> None:
@@ -20,7 +21,10 @@ def get_list_of_models(mcp: FastMCP, session: httpx.Client) -> None:
             "list operation",
         },
     )
-    def _get_list_of_models(namespace: str) -> list[dict[str, Any]]:
+    def _get_list_of_models(
+        catalog_name: str,
+        schema_name: str,
+    ) -> list[dict[str, Any]]:
         """
         List all models in the given namespace.
 
@@ -37,11 +41,9 @@ def get_list_of_models(mcp: FastMCP, session: httpx.Client) -> None:
             - namespace: Namespace of the model (catalog.schema)
             - fullyQualifiedName: Fully qualified name (metalake.catalog.schema.model or catalog.schema.model)
         """
-        metalake_name, catalog_name, schema_name = _parse_namespace(namespace)
-        if metalake_name is None:
-            metalake_name = global_metalake_name
-
-        response = session.get(f"/api/metalakes/{metalake_name}/catalogs/{catalog_name}/schemas/{schema_name}/models")
+        response = session.get(
+            f"/api/metalakes/{global_metalake_name}/catalogs/{catalog_name}/schemas/{schema_name}/models"
+        )
         response.raise_for_status()
         response_json = response.json()
 
@@ -83,7 +85,7 @@ def get_list_model_versions_by_fqn(mcp: FastMCP, session: httpx.Client) -> None:
             A list of versions, each represented as:
             - version: Version identifier
         """
-        metalake_name, catalog_name, schema_name, model_name = _parse_four_level_fqn(fqn.split("."))
+        metalake_name, catalog_name, schema_name, model_name = parse_four_level_fqn(fqn.split("."))
         if not metalake_name:
             metalake_name = global_metalake_name
 
@@ -128,7 +130,7 @@ def _get_model_version_by_fqn_and_version_response(session: httpx.Client, fully_
         Response from Metalake API.
     """
     model_names = fully_qualified_name.split(".")
-    metalake_name, catalog_name, schema_name, model_name = _parse_four_level_fqn(model_names)
+    metalake_name, catalog_name, schema_name, model_name = parse_four_level_fqn(model_names)
     if not metalake_name:
         metalake_name = global_metalake_name
 
@@ -137,58 +139,3 @@ def _get_model_version_by_fqn_and_version_response(session: httpx.Client, fully_
     )
     response.raise_for_status()
     return response.json()
-
-
-def _parse_four_level_fqn(fqn: List[str]) -> Tuple[Optional[str], str, str, str]:
-    """
-    Parse a fully qualified model name into its components.
-
-    Parameters
-    ----------
-    fqn : List[str]
-        The list obtained by splitting the model FQN by '.'
-
-    Returns
-    -------
-    Tuple[Optional[str], str, str, str]
-        A tuple of (metalake, catalog, schema, model).
-
-    Raises
-    ------
-    ValueError
-        If the name does not match the expected 3 or 4 level structure.
-    """
-    if len(fqn) >= 4:
-        return fqn[0], fqn[1], fqn[2], fqn[3]
-    elif len(fqn) == 3:
-        return None, fqn[0], fqn[1], fqn[2]
-    else:
-        raise ValueError("Invalid fully qualified name. Expected [catalog.schema.XXX] or [metalake.catalog.schema.XXX]")
-
-
-def _parse_namespace(namespace: str) -> Tuple[Optional[str], str, str]:
-    """
-    Parse a namespace string into its components.
-
-    Parameters
-    ----------
-    namespace : str
-        Namespace string, in the format 'catalog.schema' or 'metalake.catalog.schema'.
-
-    Returns
-    -------
-    Tuple[Optional[str], str, str]
-        Parsed result as (metalake, catalog, schema).
-
-    Raises
-    ------
-    ValueError
-        If the namespace is not valid.
-    """
-    levels = namespace.split(".")
-    if len(levels) >= 3:
-        return levels[0], levels[1], levels[2]
-    elif len(levels) == 2:
-        return None, levels[0], levels[1]
-    else:
-        raise ValueError("Invalid namespace. Expected [catalog.schema] or [metalake.catalog.schema]")
