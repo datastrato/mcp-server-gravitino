@@ -8,6 +8,8 @@ from mcp_server_gravitino.server.settings import Settings
 
 
 class GravitinoMCPServer:
+    """mcp server for gravitino"""
+
     def __init__(self):
         self.mcp = FastMCP("Gravitino", dependencies=["httpx"])
         self.settings = Settings()
@@ -16,24 +18,25 @@ class GravitinoMCPServer:
         self.mount_tools()
 
     def _create_session(self):
-        session = httpx.Client(base_url=self.settings.uri, headers=self.settings.authorization)
-        return session
+        return httpx.Client(
+            base_url=self.settings.uri,
+            headers=self.settings.authorization,
+        )
 
     def mount_tools(self):
-        if self.settings.active_tools:
-            if self.settings.active_tools == "*":
-                for tool in tools.__all__:
-                    register_tool = getattr(tools, tool)
-                    register_tool(self.mcp, self.session)
-            else:
-                for tool in self.settings.active_tools.split(","):
-                    if hasattr(tools, tool):
-                        register_tool = getattr(tools, tool)
-                    register_tool(self.mcp, self.session)
-                else:
-                    raise ValueError(f"Tool {tool} not found")
-        else:
+        if not self.settings.active_tools:
             raise ValueError("No tools to mount")
+        if self.settings.active_tools == "*":
+            for tool in tools.__all__:
+                register_tool = getattr(tools, tool)
+                register_tool(self.mcp, self.session)
+        else:
+            for tool in self.settings.active_tools.split(","):
+                if hasattr(tools, tool):
+                    register_tool = getattr(tools, tool)
+                register_tool(self.mcp, self.session)
+            else:
+                raise ValueError(f"Tool {tool} not found")
 
     def run(self):
         self.mcp.run()
