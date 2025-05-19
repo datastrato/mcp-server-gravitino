@@ -133,7 +133,7 @@ def _get_model_version_by_fqn_and_version_response(session: httpx.Client, fully_
     Returns
     -------
     dict
-        Response from Metalake API.
+        Response from Model API.
     """
     model_names = fully_qualified_name.split(".")
     metalake_name, catalog_name, schema_name, model_name = parse_four_level_fqn(model_names)
