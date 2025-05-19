@@ -11,11 +11,11 @@ from mcp_server_gravitino.server.tools.common_tools import parse_four_level_fqn
 
 
 def get_list_of_models(mcp: FastMCP, session: httpx.Client) -> None:
-    """List all models in the given namespace"""
+    """List all models in the given catalog and schema."""
 
     @mcp.tool(
         name="get_list_of_models",
-        description="List all models in the given namespace.",
+        description="List all models in the given catalog and schema.",
         tags={
             "model",
             "list operation",
@@ -26,20 +26,22 @@ def get_list_of_models(mcp: FastMCP, session: httpx.Client) -> None:
         schema_name: str,
     ) -> list[dict[str, Any]]:
         """
-        List all models in the given namespace.
+        List all models in the given catalog and schema.
 
         Parameters
         ----------
-        namespace : str
-            Namespace of the form 'catalog.schema' or 'metalake.catalog.schema'.
+        catalog_name : str
+            Name of the catalog.
+        schema_name : str
+            Name of the schema.
 
         Returns
         -------
         list[dict[str, Any]]
-            A list of models, where each model contains:
+            A list of models, each represented as:
             - name: Name of the model
-            - namespace: Namespace of the model (catalog.schema)
-            - fullyQualifiedName: Fully qualified name (metalake.catalog.schema.model or catalog.schema.model)
+            - namespace:  Dot-separated namespace string, e.g. "catalog.schema".
+            - fullyQualifiedName: Fully qualified name of the model
         """
         response = session.get(
             f"/api/metalakes/{global_metalake_name}/catalogs/{catalog_name}/schemas/{schema_name}/models"
@@ -58,12 +60,12 @@ def get_list_of_models(mcp: FastMCP, session: httpx.Client) -> None:
         ]
 
 
-def get_list_model_versions_by_fqn(mcp: FastMCP, session: httpx.Client) -> None:
+def get_list_of_model_versions_by_fqn(mcp: FastMCP, session: httpx.Client) -> None:
     """List all model versions by fully qualified model name."""
 
     @mcp.tool(
         name="get_list_model_versions_by_fqn",
-        description="List all model versions by using fully qualified model name.",
+        description="List all versions of a model identified by its fully qualified name.",
         tags={
             "model version",
             "list operation",
@@ -83,7 +85,11 @@ def get_list_model_versions_by_fqn(mcp: FastMCP, session: httpx.Client) -> None:
         -------
         list[dict[str, Any]]
             A list of versions, each represented as:
-            - version: Version identifier
+            - version: Version information
+            - comment: Comment associated with the version
+            - aliases: Aliases associated with the version
+            - uri: URI of the version
+            - creator: Creator of the version
         """
         metalake_name, catalog_name, schema_name, model_name = parse_four_level_fqn(fqn.split("."))
         if not metalake_name:
