@@ -11,7 +11,7 @@ from mcp_server_gravitino.server.tools import metalake_name
 from mcp_server_gravitino.server.tools.common_tools import LIST_OPERATION_TAG, SCHEMA_TAG
 
 
-def get_list_of_schemas(mcp: FastMCP, session: httpx.Client):
+def get_list_of_schemas(mcp: FastMCP, session: httpx.Client) -> None:
     """Get a list of schemas, filtered by catalog it belongs to."""
 
     # https://gravitino.apache.org/docs/0.8.0-incubating/api/rest/list-schemas

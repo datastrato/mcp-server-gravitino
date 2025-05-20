@@ -101,7 +101,7 @@ def associate_tag_to_table(mcp: FastMCP, session: httpx.Client) -> None:
         )
 
 
-def associate_tag_to_column(mcp: FastMCP, session: httpx.Client):
+def associate_tag_to_column(mcp: FastMCP, session: httpx.Client) -> None:
     @mcp.tool(
         name="associate_tag_to_column",
         description="associate tag to a column object",
