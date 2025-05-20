@@ -2,6 +2,26 @@
 # This software is licensed under the Apache License version 2.
 from typing import List, Optional, Tuple
 
+# Operation tags
+LIST_OPERATION_TAG = "list operation"
+GET_OPERATION_TAG = "get operation"
+GRANT_OPERATION_TAG = "grant operation"
+REVOKE_OPERATION_TAG = "revoke operation"
+
+# API tags
+MODEL_TAG = "models"
+MODEL_VERSION_TAG = "model_versions"
+CATALOG_TAG = "catalogs"
+SCHEMA_TAG = "schemas"
+TABLE_TAG = "tables"
+TAG_OBJECT_TAG = "tags"
+ROLE_TAG = "roles"
+USER_TAG = "users"
+PRIVILEGES_TAG = "privileges"
+
+# other tags
+DETAILS_TAG = "details"
+
 
 def parse_four_level_fqn(fqn: List[str]) -> Tuple[Optional[str], str, str, str]:
     """
