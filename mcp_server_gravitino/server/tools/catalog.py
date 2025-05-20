@@ -2,19 +2,45 @@
 # This software is licensed under the Apache License version 2.
 
 # Table organizes data in rows and columns and is defined in a Database Schema.
+from typing import Any
+
 import httpx
 from fastmcp import FastMCP
+
 from mcp_server_gravitino.server.tools import metalake_name
+from mcp_server_gravitino.server.tools.common_tools import CATALOG_TAG, DETAILS_TAG, LIST_OPERATION_TAG
+
 
 def get_list_of_catalogs(mcp: FastMCP, session: httpx.Client):
+    """Get a list of catalogs in the Metalake."""
+
     # https://gravitino.apache.org/docs/0.8.0-incubating/api/rest/list-catalogs
     @mcp.tool(
         name="get_list_of_catalogs",
-        description="Get a list of catalogs.",
+        description="Get a list of catalogs in the Metalake.",
+        tags={
+            CATALOG_TAG,
+            LIST_OPERATION_TAG,
+            DETAILS_TAG,
+        },
+        annotations={
+            "readOnlyHint": True,
+            "openWorldHint": True,
+        },
     )
-    def _get_list_of_catalogs():
+    def _get_list_of_catalogs() -> list[dict[str, Any]]:
         """
-        Get a list of catalogs.
+        Get a list of catalogs in the Metalake. it returns a list of dictionaries containing catalog details.
+
+
+        Returns
+        -------
+        list[dict[str, Any]]
+            A list of dictionaries containing catalog details.
+            - name: Name of the catalog.
+            - type: Type of the catalog.
+            - provider: Provider of the catalog.
+            - comment: Comment about the catalog.
         """
         response = session.get(f"/api/metalakes/{metalake_name}/catalogs?details=true")
         response.raise_for_status()
@@ -29,33 +55,4 @@ def get_list_of_catalogs(mcp: FastMCP, session: httpx.Client):
                 "comment": catalog.get("comment"),
             }
             for catalog in catalogs
-        ]
-
-
-def get_list_of_schemas(mcp: FastMCP, session: httpx.Client):
-    # https://gravitino.apache.org/docs/0.8.0-incubating/api/rest/list-schemas
-    @mcp.tool(
-        name="get_list_of_schemas",
-        description="Get a list of schemas, filtered by catalog it belongs to.",
-    )
-    def _get_list_of_schemas(
-            catalog_name: str
-    ):
-        """
-        Get a list of schemas, filtered by catalog it belongs to.
-
-        Args:
-            catalog_name (str):  name of the catalog
-        """
-        response = session.get(f"/api/metalakes/{metalake_name}/catalogs/{catalog_name}/schemas")
-        response.raise_for_status()
-        response_json = response.json()
-
-        identifiers = response_json.get("identifiers", [])
-        return [
-            {
-                "name": ident.get("name"),
-                "namespace":  ".".join(ident.get("namespace")),
-            }
-            for ident in identifiers
         ]
