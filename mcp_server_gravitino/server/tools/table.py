@@ -8,9 +8,16 @@ import httpx
 from fastmcp import FastMCP
 
 from mcp_server_gravitino.server.tools import metalake_name
-from mcp_server_gravitino.server.tools.common_tools import GET_OPERATION_TAG, LIST_OPERATION_TAG, TABLE_TAG
+from mcp_server_gravitino.server.tools.common_tools import (
+    GET_OPERATION_TAG,
+    LIST_OPERATION_TAG,
+    TABLE_CATEGORY,
+    TABLE_TAG,
+)
+from mcp_server_gravitino.server.tools.registry import register_tool
 
 
+@register_tool(TABLE_CATEGORY)
 def get_list_of_tables(mcp: FastMCP, session: httpx.Client) -> None:
     """Get a list of tables, optionally filtered by database it belongs to."""
 
@@ -64,6 +71,7 @@ def get_list_of_tables(mcp: FastMCP, session: httpx.Client) -> None:
         ]
 
 
+@register_tool(TABLE_CATEGORY)
 def get_table_by_fqn(mcp: FastMCP, session: httpx.Client) -> None:
     """Get a table by fully qualified table name."""
 
@@ -106,6 +114,7 @@ def get_table_by_fqn(mcp: FastMCP, session: httpx.Client) -> None:
         }
 
 
+@register_tool(TABLE_CATEGORY)
 def get_table_columns_by_fqn(mcp: FastMCP, session: httpx.Client) -> None:
     """Get a table columns by fully qualified table name."""
 

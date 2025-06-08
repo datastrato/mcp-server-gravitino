@@ -8,9 +8,11 @@ import httpx
 from fastmcp import FastMCP
 
 from mcp_server_gravitino.server.tools import metalake_name
-from mcp_server_gravitino.server.tools.common_tools import LIST_OPERATION_TAG, SCHEMA_TAG
+from mcp_server_gravitino.server.tools.common_tools import LIST_OPERATION_TAG, SCHEMA_CATEGORY, SCHEMA_TAG
+from mcp_server_gravitino.server.tools.registry import register_tool
 
 
+@register_tool(SCHEMA_CATEGORY)
 def get_list_of_schemas(mcp: FastMCP, session: httpx.Client) -> None:
     """Get a list of schemas, filtered by catalog it belongs to."""
 

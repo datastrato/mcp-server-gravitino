@@ -10,10 +10,13 @@ from mcp_server_gravitino.server.tools.common_tools import (
     PRIVILEGES_TAG,
     REVOKE_OPERATION_TAG,
     ROLE_TAG,
+    USER_ROLE_CATEGORY,
     USER_TAG,
 )
+from mcp_server_gravitino.server.tools.registry import register_tool
 
 
+@register_tool(USER_ROLE_CATEGORY)
 def get_list_of_roles(mcp: FastMCP, session: httpx.Client) -> None:
     """Get a list of role names, which can be used to manage access control."""
 
@@ -53,6 +56,7 @@ def get_list_of_roles(mcp: FastMCP, session: httpx.Client) -> None:
         ]
 
 
+@register_tool(USER_ROLE_CATEGORY)
 def get_list_of_users(mcp: FastMCP, session: httpx.Client) -> None:
     """Get a list of users, and the roles granted to the user."""
 
@@ -94,6 +98,7 @@ def get_list_of_users(mcp: FastMCP, session: httpx.Client) -> None:
         ]
 
 
+@register_tool(USER_ROLE_CATEGORY)
 def grant_role_to_user(mcp: FastMCP, session: httpx.Client) -> None:
     """Grant a role to an user."""
 
@@ -152,6 +157,7 @@ def grant_role_to_user(mcp: FastMCP, session: httpx.Client) -> None:
         }
 
 
+@register_tool(USER_ROLE_CATEGORY)
 def revoke_role_from_user(mcp: FastMCP, session: httpx.Client):
     """Revoke a role from an user."""
 

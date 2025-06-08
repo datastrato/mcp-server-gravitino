@@ -5,6 +5,7 @@ from fastmcp import FastMCP
 
 from mcp_server_gravitino.server import tools
 from mcp_server_gravitino.server.settings import Settings
+from mcp_server_gravitino.server.tools.registry import TOOLS
 
 
 class GravitinoMCPServer:
@@ -24,19 +25,35 @@ class GravitinoMCPServer:
         )
 
     def mount_tools(self):
+        """
+        Mount specific tools to the mcp server.
+        If the active_tools is "*", all tools will be mounted.
+        Otherwise, the active_tools will be mounted.
+        Returns
+        -------
+        None
+        """
         if not self.settings.active_tools:
             raise ValueError("No tools to mount")
-        if self.settings.active_tools == "*":
-            for tool in tools.__all__:
-                register_tool = getattr(tools, tool)
-                register_tool(self.mcp, self.session)
-        else:
-            for tool in self.settings.active_tools.split(","):
-                if hasattr(tools, tool):
-                    register_tool = getattr(tools, tool)
-                register_tool(self.mcp, self.session)
-            else:
-                raise ValueError(f"Tool {tool} not found")
+
+        active = (
+            TOOLS.keys()
+            if self.settings.active_tools == "*"
+            else [c.strip() for c in self.settings.active_tools.split(",")]
+        )
+
+        if unknown := [c for c in active if c.strip() not in TOOLS]:
+            raise ValueError(f"Unknown tool category(s): {', '.join(unknown)}")
+
+        for category in active:
+            for tool_fn in TOOLS[category]:
+                tool_fn(self.mcp, self.session)
 
     def run(self):
+        """
+        Run the mcp server.
+        Returns
+        -------
+        None
+        """
         self.mcp.run()

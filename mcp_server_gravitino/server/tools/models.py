@@ -9,12 +9,15 @@ from fastmcp import FastMCP
 from mcp_server_gravitino.server.tools import metalake_name as global_metalake_name
 from mcp_server_gravitino.server.tools.common_tools import (
     LIST_OPERATION_TAG,
+    MODEL_CATEGORY,
     MODEL_TAG,
     MODEL_VERSION_TAG,
     parse_four_level_fqn,
 )
+from mcp_server_gravitino.server.tools.registry import register_tool
 
 
+@register_tool(MODEL_CATEGORY)
 def get_list_of_models(mcp: FastMCP, session: httpx.Client) -> None:
     """List all models in the given catalog and schema."""
 
@@ -69,6 +72,7 @@ def get_list_of_models(mcp: FastMCP, session: httpx.Client) -> None:
         ]
 
 
+@register_tool(MODEL_CATEGORY)
 def get_list_of_model_versions_by_fqn(mcp: FastMCP, session: httpx.Client) -> None:
     """List all model versions by fully qualified model name."""
 

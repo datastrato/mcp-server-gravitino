@@ -6,9 +6,11 @@ import httpx
 from fastmcp import FastMCP
 
 from mcp_server_gravitino.server.tools import metalake_name
-from mcp_server_gravitino.server.tools.common_tools import LIST_OPERATION_TAG, TAG_OBJECT_TAG
+from mcp_server_gravitino.server.tools.common_tools import LIST_OPERATION_TAG, TAG_CATEGORY, TAG_OBJECT_TAG
+from mcp_server_gravitino.server.tools.registry import register_tool
 
 
+@register_tool(TAG_CATEGORY)
 def get_list_of_tags(mcp: FastMCP, session: httpx.Client):
     """Get a list of tags."""
 
@@ -48,6 +50,7 @@ def get_list_of_tags(mcp: FastMCP, session: httpx.Client):
         ]
 
 
+@register_tool(TAG_CATEGORY)
 def associate_tag_to_table(mcp: FastMCP, session: httpx.Client) -> None:
     @mcp.tool(
         name="associate_tag_to_table",
@@ -101,6 +104,7 @@ def associate_tag_to_table(mcp: FastMCP, session: httpx.Client) -> None:
         )
 
 
+@register_tool(TAG_CATEGORY)
 def associate_tag_to_column(mcp: FastMCP, session: httpx.Client) -> None:
     @mcp.tool(
         name="associate_tag_to_column",
@@ -155,6 +159,7 @@ def associate_tag_to_column(mcp: FastMCP, session: httpx.Client) -> None:
         )
 
 
+@register_tool(TAG_CATEGORY)
 def list_objects_by_tag(mcp: FastMCP, session: httpx.Client) -> None:
     """List the metadata objects with a given tag."""
 

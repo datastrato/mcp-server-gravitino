@@ -22,6 +22,14 @@ PRIVILEGES_TAG = "privileges"
 # other tags
 DETAILS_TAG = "details"
 
+# API category
+CATALOG_CATEGORY = "catalog"
+SCHEMA_CATEGORY = "schema"
+MODEL_CATEGORY = "model"
+TABLE_CATEGORY = "table"
+TAG_CATEGORY = "tag"
+USER_ROLE_CATEGORY = "user_role"
+
 
 def parse_four_level_fqn(fqn: List[str]) -> Tuple[Optional[str], str, str, str]:
     """

@@ -8,9 +8,16 @@ import httpx
 from fastmcp import FastMCP
 
 from mcp_server_gravitino.server.tools import metalake_name
-from mcp_server_gravitino.server.tools.common_tools import CATALOG_TAG, DETAILS_TAG, LIST_OPERATION_TAG
+from mcp_server_gravitino.server.tools.common_tools import (
+    CATALOG_CATEGORY,
+    CATALOG_TAG,
+    DETAILS_TAG,
+    LIST_OPERATION_TAG,
+)
+from mcp_server_gravitino.server.tools.registry import register_tool
 
 
+@register_tool(CATALOG_CATEGORY)
 def get_list_of_catalogs(mcp: FastMCP, session: httpx.Client) -> None:
     """Get a list of catalogs in the Metalake."""
 
