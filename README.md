@@ -13,6 +13,7 @@ MCP server providing Gravitino APIs - A FastMCP integration for Apache Gravitino
 ## Installation
 
 ### from configuration
+
 ```json
 {
     "mcpServers": {
@@ -46,26 +47,30 @@ MCP server providing Gravitino APIs - A FastMCP integration for Apache Gravitino
 ## Environment Variables
 
 ### Authorization
+
 mcp-server-gravitino provides token auth and basic auth:
 
 **Token Auth**
-```
+
+```bash
 GRAVITINO_URI=http://localhost:8090
 GRAVITINO_JWT_TOKEN=<YOUR GRAVITINO JWT TOKEN>
 ```
 
 **Basic Auth**
-```
+
+```bash
 GRAVITINO_URI=http://localhost:8090
 GRAVITINO_USERNAME=<YOUR GRAVITINO USERNAME>
 GRAVITINO_PASSWORD=<YOUR GRAVITINO PASSWORD>
 ```
 
-
 ## Tool list
+
 mcp-server-gravitino does not provide all APIs available in Gravitino.
 
 ### Table Tools
+
 - `get_list_of_catalogs`: Get a list of catalogs with basic information
 - `get_list_of_schemas`: Get a list of schemas with basic information
 - `get_list_of_tables`: Get a paginated list of tables with basic information
@@ -73,19 +78,25 @@ mcp-server-gravitino does not provide all APIs available in Gravitino.
 - `get_table_columns_by_fqn`: Get table columns information by fully qualified name
 
 ### Tag Tools
+
 - `get_list_of_tags`: Get a list of tags with basic information
 - `associate_tag_to_table`: Associate a tag to a table
 - `associate_tag_to_column`: Associate a tag to a column
 - `list_objects_by_tag`: Get a list of objects associated with a tag
 
 ### User Role Tools
+
 - `get_list_of_roles`: Get a list of roles with basic information
 - `get_list_of_users`: Get a list of users with basic information
 - `grant_role_to_user`: Grant a role to a user
 - `revoke_role_from_user`: Revoke a role from a user
 
-Each tool returns optimized responses with relevant fields to ensure compatibility with model context limits while providing essential metadata information.
+### Model Tools
 
+- `get_list_of_models`: Get a list of models with basic information
+- `get_list_of_model_versions_by_fqn`: Get a list of model versions by fully qualified name with detailed information
+
+Each tool returns optimized responses with relevant fields to ensure compatibility with model context limits while providing essential metadata information.
 
 ## License
 

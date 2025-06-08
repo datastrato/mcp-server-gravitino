@@ -1,13 +1,18 @@
 # Copyright 2024 Datastrato Pvt Ltd.
 # This software is licensed under the Apache License version 2.
 
-from typing import Any, List, Optional, Tuple
+from typing import Any
 
 import httpx
 from fastmcp import FastMCP
 
 from mcp_server_gravitino.server.tools import metalake_name as global_metalake_name
-from mcp_server_gravitino.server.tools.common_tools import parse_four_level_fqn
+from mcp_server_gravitino.server.tools.common_tools import (
+    LIST_OPERATION_TAG,
+    MODEL_TAG,
+    MODEL_VERSION_TAG,
+    parse_four_level_fqn,
+)
 
 
 def get_list_of_models(mcp: FastMCP, session: httpx.Client) -> None:
@@ -17,8 +22,12 @@ def get_list_of_models(mcp: FastMCP, session: httpx.Client) -> None:
         name="get_list_of_models",
         description="List all models in the given catalog and schema.",
         tags={
-            "model",
-            "list operation",
+            MODEL_TAG,
+            LIST_OPERATION_TAG,
+        },
+        annotations={
+            "readOnlyHint": True,
+            "openWorldHint": True,
         },
     )
     def _get_list_of_models(
@@ -67,8 +76,12 @@ def get_list_of_model_versions_by_fqn(mcp: FastMCP, session: httpx.Client) -> No
         name="get_list_model_versions_by_fqn",
         description="List all versions of a model identified by its fully qualified name.",
         tags={
-            "model version",
-            "list operation",
+            MODEL_VERSION_TAG,
+            LIST_OPERATION_TAG,
+        },
+        annotations={
+            "readOnlyHint": True,
+            "openWorldHint": True,
         },
     )
     def _list_model_versions_by_fqn(fqn: str) -> list[dict[str, Any]]:
@@ -119,7 +132,11 @@ def get_list_of_model_versions_by_fqn(mcp: FastMCP, session: httpx.Client) -> No
         ]
 
 
-def _get_model_version_by_fqn_and_version_response(session: httpx.Client, fully_qualified_name: str, version: str):
+def _get_model_version_by_fqn_and_version_response(
+    session: httpx.Client,
+    fully_qualified_name: str,
+    version: str,
+) -> Any:
     """
     Get a model version by fully qualified model name and version.
     Parameters
