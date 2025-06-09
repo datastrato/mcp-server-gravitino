@@ -1,6 +1,6 @@
 # Copyright 2024 Datastrato Pvt Ltd.
 # This software is licensed under the Apache License version 2.
-from typing import Optional
+from typing import Dict, Optional
 
 import httpx
 from fastmcp import FastMCP
@@ -11,6 +11,13 @@ from mcp_server_gravitino.server.tools.common_tools import (
     TAG_OBJECT_TAG,
     get_name_identifier_without_metalake,
 )
+
+_level_map: Dict[int, str] = {
+    2: "catalog",
+    3: "schema",
+    4: "table",
+    5: "column",
+}
 
 
 def get_list_of_tags(mcp: FastMCP, session: httpx.Client):
@@ -57,7 +64,7 @@ def associate_tag_to_entity(mcp: FastMCP, session: httpx.Client) -> None:
 
     @mcp.tool(
         name="associate_tag_to_entity",
-        description="Associate a tag with a table or column",
+        description="Associate a tag with a catalog, schema, table or column.",
         tags={
             TAG_OBJECT_TAG,
         },
@@ -76,13 +83,14 @@ def associate_tag_to_entity(mcp: FastMCP, session: httpx.Client) -> None:
             return {"result": "error", "message": "fully_qualified_name cannot be empty"}
 
         names = fully_qualified_name.split(".")
-        if len(names) not in [4, 5]:
+        level = len(names)
+        if level not in [2, 3, 4, 5]:
             return {
                 "result": "error",
-                "message": "fully_qualified_name should be in the format'metalake.catalog.schema.table' or 'metalake.catalog.schema.table.column'",
+                "message": "Invalid 'fully_qualified_name': it must refer to a catalog, schema, table or column.",
             }
-        object_type = "table" if len(names) == 4 else "column"
 
+        object_type = _get_object_type(level)
         qualified_name = get_name_identifier_without_metalake(fully_qualified_name)
 
         return _associate_tag_to_object(
@@ -194,3 +202,11 @@ def _associate_tag_to_object(
     return {
         "result": "success",
     }
+
+
+def _get_object_type(level: int) -> str:
+    object_type = _level_map.get(level)
+    if object_type is None:
+        raise ValueError(f"Invalid level: {level}")
+
+    return object_type
