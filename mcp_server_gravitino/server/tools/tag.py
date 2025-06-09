@@ -84,7 +84,7 @@ def associate_tag_to_entity(mcp: FastMCP, session: httpx.Client) -> None:
 
         names = fully_qualified_name.split(".")
         level = len(names)
-        if level not in [2, 3, 4, 5]:
+        if level not in _level_map.keys():
             return {
                 "result": "error",
                 "message": "Invalid 'fully_qualified_name': it must refer to a catalog, schema, table or column.",
