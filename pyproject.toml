@@ -45,6 +45,8 @@ dev = [
     "build>=1.2.2.post1",
     "ruff>=0.11.3",
     "twine>=6.1.0",
+    "pytest>=8.2.0",
+    "pytest-asyncio>=0.23.0"
 ]
 
 [tool.ruff]
@@ -52,4 +54,11 @@ line-length = 120
 target-version = "py310"
 select = [
     "I",  # isort
+]
+
+[tool.pytest.ini_options]
+minversion = "8.0" # Minimum pytest version.
+addopts = "-ra" # Show summary info and all type of tests.
+testpaths = [
+    "tests",
 ]

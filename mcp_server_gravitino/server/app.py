@@ -32,11 +32,11 @@ class GravitinoMCPServer:
                 register_tool(self.mcp, self.session)
         else:
             for tool in self.settings.active_tools.split(","):
-                if hasattr(tools, tool):
-                    register_tool = getattr(tools, tool)
-                register_tool(self.mcp, self.session)
-            else:
-                raise ValueError(f"Tool {tool} not found")
+                if hasattr(tools, tool.strip()):
+                    register_tool = getattr(tools, tool.strip())
+                    register_tool(self.mcp, self.session)
+                else:
+                    raise ValueError(f"Tool {tool} not found", c)
 
     def run(self):
         self.mcp.run()
