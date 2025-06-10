@@ -1,12 +1,23 @@
 # Copyright 2024 Datastrato Pvt Ltd.
 # This software is licensed under the Apache License version 2.
-from typing import Optional
+from typing import Dict, Optional
 
 import httpx
 from fastmcp import FastMCP
 
 from mcp_server_gravitino.server.tools import metalake_name
-from mcp_server_gravitino.server.tools.common_tools import LIST_OPERATION_TAG, TAG_OBJECT_TAG
+from mcp_server_gravitino.server.tools.common_tools import (
+    LIST_OPERATION_TAG,
+    TAG_OBJECT_TAG,
+    get_name_identifier_without_metalake,
+)
+
+_level_map: Dict[int, str] = {
+    2: "catalog",
+    3: "schema",
+    4: "table",
+    5: "column",
+}
 
 
 def get_list_of_tags(mcp: FastMCP, session: httpx.Client):
@@ -48,10 +59,12 @@ def get_list_of_tags(mcp: FastMCP, session: httpx.Client):
         ]
 
 
-def associate_tag_to_table(mcp: FastMCP, session: httpx.Client) -> None:
+def associate_tag_to_entity(mcp: FastMCP, session: httpx.Client) -> None:
+    """Associate a tag with a catalog, schema, table or column."""
+
     @mcp.tool(
-        name="associate_tag_to_table",
-        description="associate tag to table object",
+        name="associate_tag_to_entity",
+        description="Associate a tag with a catalog, schema, table or column.",
         tags={
             TAG_OBJECT_TAG,
         },
@@ -62,96 +75,29 @@ def associate_tag_to_table(mcp: FastMCP, session: httpx.Client) -> None:
             "idempotentHint": True,
         },
     )
-    def _associate_tag_to_table(tag_name: str, fully_qualified_name: str) -> dict[str, str]:
-        """
-        Associate a tag with a table by tag name and table's fully qualified name.
-
-        Parameters
-        ----------
-        tag_name : str
-            The name of the tag to be associated with the table
-        fully_qualified_name : str
-            Fully qualified name of the table
-
-
-        Returns
-        -------
-        dict[str, str]
-            If an error occurs, returns {"result": "error", "message": "error message"}.
-            if successful, returns {"result": "success"}
-        """
+    def _associate_tag_to_entity(
+        tag_name: str,
+        fully_qualified_name: str,
+    ) -> dict[str, str]:
         if not fully_qualified_name:
             return {"result": "error", "message": "fully_qualified_name cannot be empty"}
-        table_names = fully_qualified_name.split(".")
-        if len(table_names) != 4:
+
+        names = fully_qualified_name.split(".")
+        level = len(names)
+        if level not in _level_map.keys():
             return {
                 "result": "error",
-                "message": "table fully_qualified_name should be in the format 'metalake.catalog.schema.table'",
+                "message": "Invalid 'fully_qualified_name': it must refer to a catalog, schema, table or column.",
             }
 
-        # metalake = table_names[0]
-        catalog_name = table_names[1]
-        schema_name = table_names[2]
-        table_name = table_names[3]
-
-        qualified_name = f"{catalog_name}.{schema_name}.{table_name}"
+        object_type = _get_object_type(level)
+        qualified_name = get_name_identifier_without_metalake(fully_qualified_name)
 
         return _associate_tag_to_object(
-            session=session, tag_name=tag_name, object_type="table", obj_qualified_name=qualified_name
-        )
-
-
-def associate_tag_to_column(mcp: FastMCP, session: httpx.Client) -> None:
-    @mcp.tool(
-        name="associate_tag_to_column",
-        description="associate tag to a column object",
-        tags={
-            TAG_OBJECT_TAG,
-        },
-        annotations={
-            "readOnlyHint": False,
-            "openWorldHint": True,
-            "destructiveHint": True,
-            "idempotentHint": True,
-        },
-    )
-    def _associate_tag_to_column(tag_name: str, table_fully_qualified_name: str, column_name: str) -> dict[str, str]:
-        """
-        Associate a tag with a column by tag name, table's fully qualified name and column name.
-
-        Parameters
-        ----------
-        tag_name : str
-            The name of the tag to be associated with the column
-        table_fully_qualified_name : str
-            Fully qualified name of the table
-        column_name : str
-            Name of the column
-
-        Returns
-        -------
-        dict[str, str]
-            If an error occurs, returns {"result": "error", "message": "error message"}.
-            if successful, returns {"result": "success"}
-        """
-        if not table_fully_qualified_name:
-            return {"result": "error", "message": "table_fully_qualified_name cannot be empty"}
-        table_names = table_fully_qualified_name.split(".")
-        if len(table_names) != 4:
-            return {
-                "result": "error",
-                "message": "table_fully_qualified_name should be in the format 'metalake.catalog.schema.table'",
-            }
-
-        # metalake = table_names[0]
-        catalog_name = table_names[1]
-        schema_name = table_names[2]
-        table_name = table_names[3]
-
-        qualified_name = f"{catalog_name}.{schema_name}.{table_name}.{column_name}"
-
-        return _associate_tag_to_object(
-            session=session, tag_name=tag_name, object_type="column", obj_qualified_name=qualified_name
+            session=session,
+            tag_name=tag_name,
+            object_type=object_type,
+            obj_qualified_name=qualified_name,
         )
 
 
@@ -256,3 +202,11 @@ def _associate_tag_to_object(
     return {
         "result": "success",
     }
+
+
+def _get_object_type(level: int) -> str:
+    object_type = _level_map.get(level)
+    if object_type is None:
+        raise ValueError(f"Invalid level: {level}")
+
+    return object_type

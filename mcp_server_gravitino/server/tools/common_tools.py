@@ -53,3 +53,18 @@ def parse_four_level_fqn(fqn: List[str]) -> Tuple[Optional[str], str, str, str]:
         raise ValueError(
             "Invalid fully qualified name. Expected [catalog_name.schema_name.entity_name] or [metalake_name.catalog_name.schema_name.entity_name]"
         )
+
+
+def get_name_identifier_without_metalake(fqn: str) -> str:
+    """
+    Get the name identifier without the metalake name.
+    Parameters
+    ----------
+    fqn : str
+        A fully qualified name.
+    Returns
+    -------
+    str
+        The name identifier without the metalake name.
+    """
+    return fqn.split(".", 1)[1] if "." in fqn else fqn

@@ -13,8 +13,7 @@ from mcp_server_gravitino.server.tools.table import (
     get_table_columns_by_fqn,
 )
 from mcp_server_gravitino.server.tools.tag import (
-    associate_tag_to_column,
-    associate_tag_to_table,
+    associate_tag_to_entity,
     get_list_of_tags,
     list_objects_by_tag,
 )
@@ -30,8 +29,7 @@ __all__ = [
     "get_table_columns_by_fqn",
     "get_list_of_tables",
     "get_list_of_tags",
-    "associate_tag_to_table",
-    "associate_tag_to_column",
+    "associate_tag_to_entity",
     "list_objects_by_tag",
     "get_list_of_catalogs",
     "get_list_of_schemas",
