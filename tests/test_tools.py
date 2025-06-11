@@ -1,3 +1,4 @@
+import os
 from unittest.mock import patch
 
 import pytest
@@ -25,7 +26,7 @@ def make_server_params(**kwargs) -> StdioServerParameters:
         command="uv",
         args=[
             "--directory",
-            "/Users/panchenxi/Work/Project/work/own/component/mcp-gravitino",
+            f"{os.getcwd()}",
             "run",
             "--with",
             "fastmcp",

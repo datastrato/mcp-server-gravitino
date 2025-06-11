@@ -1,3 +1,5 @@
+import os
+
 import pytest
 from mcp import ClientSession, StdioServerParameters
 from mcp.client.stdio import stdio_client
@@ -10,7 +12,7 @@ def make_server_params(**kwargs) -> StdioServerParameters:
         command="uv",
         args=[
             "--directory",
-            "/Users/panchenxi/Work/Project/work/own/component/mcp-gravitino",
+            f"{os.getcwd()}",
             "run",
             "--with",
             "fastmcp",
