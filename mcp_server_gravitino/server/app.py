@@ -4,7 +4,7 @@ import os
 
 import httpx
 from fastmcp import FastMCP
-from httpx import MockTransport, Response
+from httpx import Response
 
 from mcp_server_gravitino.server import tools
 from mcp_server_gravitino.server.settings import Settings
@@ -13,6 +13,7 @@ from mcp_server_gravitino.server.test_helper import (
     LIST_MODEL_TEST_RESPONSE,
     LIST_SCHEMA_TEST_RESPONSE,
     LIST_TABLE_TEST_RESPONSE,
+    mock_httpx_client,
 )
 
 
@@ -28,15 +29,6 @@ class GravitinoMCPServer:
         self.session = self._create_session()
 
         self.mount_tools()
-
-    def _create_session(self):
-        if not self.test_enabled:
-            return httpx.Client(
-                base_url=self.settings.uri,
-                headers=self.settings.authorization,
-            )
-
-        return self._mock_httpx_client()
 
     def mount_tools(self) -> None:
         """
@@ -67,49 +59,11 @@ class GravitinoMCPServer:
         """
         self.mcp.run()
 
-    def _mock_httpx_client(self) -> httpx.Client:
-        """
-        Mock httpx client for testing
+    def _create_session(self):
+        if not self.test_enabled:
+            return httpx.Client(
+                base_url=self.settings.uri,
+                headers=self.settings.authorization,
+            )
 
-        Returns
-        -------
-        httpx.Client
-            Mock httpx client
-        """
-
-        def mock_handler(request: httpx.Request) -> Response:
-            if request.method == "GET":
-                # mock catalogs
-                if request.url.path == f"/api/metalakes/{self.metalake}/catalogs":
-                    return Response(
-                        200,
-                        json={
-                            "catalogs": LIST_CATALOG_TEST_RESPONSE,
-                        },
-                    )
-                # mock schemas
-                elif request.url.path == f"/api/metalakes/{self.metalake}/catalogs/catalog/schemas":
-                    return Response(
-                        200,
-                        json={
-                            "identifiers": LIST_SCHEMA_TEST_RESPONSE,
-                        },
-                    )
-                elif request.url.path == f"/api/metalakes/{self.metalake}/catalogs/catalog/schemas/schema/tables":
-                    return Response(
-                        200,
-                        json={
-                            "identifiers": LIST_TABLE_TEST_RESPONSE,
-                        },
-                    )
-                elif request.url.path == f"/api/metalakes/{self.metalake}/catalogs/catalog/schemas/schema/models":
-                    return Response(
-                        200,
-                        json={
-                            "identifiers": LIST_MODEL_TEST_RESPONSE,
-                        },
-                    )
-
-            return Response(404, json={"path": str(request.url)})
-
-        return httpx.Client(transport=MockTransport(mock_handler), base_url=self.settings.uri)
+        return mock_httpx_client(self.metalake, self.settings)

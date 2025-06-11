@@ -33,7 +33,15 @@ jobs:
       - name: Install project with dev dependencies using uv
         run: |
           uv pip install -e ".[dev]"
+          uv pip install pytest-cov
 
-      - name: Run tests with pytest
+      - name: Run tests with coverage
         run: |
-          pytest -v
+          pytest --cov=your_package --cov-report=term --cov-report=xml -v | tee pytest.log
+
+      - name: Archive test logs on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pytest-log-${{ matrix.python-version }}
+          path: pytest.log
