@@ -37,7 +37,7 @@ jobs:
 
       - name: Run tests with coverage
         run: |
-          pytest --cov=your_package --cov-report=term --cov-report=xml -v | tee pytest.log
+          pytest --cov=mcp_server_gravitino --cov-report=term --cov-report=xml -v | tee pytest.log
 
       - name: Archive test logs on failure
         if: failure()
