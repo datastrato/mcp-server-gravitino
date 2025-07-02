@@ -1,8 +1,8 @@
-# MCP Server for Apache Gravitino (incubating)
+# MCP Server for Apache Gravitino
 
 [![Python Version](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 
-MCP server providing Gravitino APIs - A FastMCP integration for Apache Gravitino (incubating) services.
+MCP server providing Gravitino APIs - A FastMCP integration for Apache Gravitino services.
 
 ## Features
 
