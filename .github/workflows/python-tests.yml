@@ -36,7 +36,7 @@ jobs:
       - name: Install project with dev dependencies using uv
         run: |
           uv pip install -e ".[dev]"
-          uv pip install pytest-cov
+          uv pip install pytest pytest-cov
 
       - name: Run tests with coverage
         run: |
