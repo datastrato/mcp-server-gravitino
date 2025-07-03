@@ -42,11 +42,11 @@ jobs:
         run: |
           uv run pytest --cov=mcp_server_gravitino --cov-report=term --cov-report=html -v | tee pytest.log
 
-      - name: Upload coverage report
+      - name: Upload HTML coverage report
         uses: actions/upload-artifact@v4
         with:
-          name: coverage-xml-${{ matrix.python-version }}
-          path: coverage.xml
+          name: coverage-html-${{ matrix.python-version }}
+          path: htmlcov/
 
       - name: Archive test logs on failure
         if: failure()
