@@ -30,14 +30,23 @@ jobs:
           curl -LsSf https://astral.sh/uv/install.sh | sh
           echo "$HOME/.cargo/bin" >> $GITHUB_PATH
 
+      - name: Create Python virtual environment
+        run: uv venv
+
       - name: Install project with dev dependencies using uv
         run: |
           uv pip install -e ".[dev]"
-          uv pip install pytest-cov
+          uv pip install pytest pytest-cov
 
       - name: Run tests with coverage
         run: |
-          pytest --cov=mcp_server_gravitino --cov-report=term --cov-report=xml -v | tee pytest.log
+          uv run pytest --cov=mcp_server_gravitino --cov-report=term --cov-report=html -v | tee pytest.log
+
+      - name: Upload HTML coverage report
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-html-${{ matrix.python-version }}
+          path: htmlcov/
 
       - name: Archive test logs on failure
         if: failure()
