@@ -1,3 +1,5 @@
+[![MseeP.ai Security Assessment Badge](https://mseep.net/pr/datastrato-mcp-server-gravitino-badge.png)](https://mseep.ai/app/datastrato-mcp-server-gravitino)
+
 # MCP Server for Apache Gravitino
 
 [![Python Version](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
